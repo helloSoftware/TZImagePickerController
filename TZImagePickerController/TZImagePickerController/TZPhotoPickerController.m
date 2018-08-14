@@ -81,7 +81,14 @@ static CGFloat itemMargin = 5;
     _isSelectOriginalPhoto = tzImagePickerVc.isSelectOriginalPhoto;
     _shouldScrollToBottom = YES;
     self.view.backgroundColor = [UIColor whiteColor];
-    self.navigationItem.title = _model.name;
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setTitle:_model.name forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(showAlbum) forControlEvents:UIControlEventTouchUpInside];
+    
+//    self.navigationItem.title = _model.name;
+    self.navigationItem.titleView = button;
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:tzImagePickerVc.cancelBtnTitleStr style:UIBarButtonItemStylePlain target:tzImagePickerVc action:@selector(cancelButtonClick)];
     if (tzImagePickerVc.navLeftBarButtonSettingBlock) {
         UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -95,6 +102,15 @@ static CGFloat itemMargin = 5;
     _showTakePhotoBtn = _model.isCameraRoll && ((tzImagePickerVc.allowTakePicture && tzImagePickerVc.allowPickingImage) || (tzImagePickerVc.allowTakeVideo && tzImagePickerVc.allowPickingVideo));
     // [self resetCachedAssets];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarOrientationNotification:) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
+}
+
+- (void)showAlbum {
+    
+    TZAlbumPickerController *albumPicker = [[TZAlbumPickerController alloc] init];
+    albumPicker.columnNumber = self.columnNumber;
+    [self addChildViewController:albumPicker];
+    [self.view addSubview:albumPicker.view];
+    
 }
 
 - (void)fetchAssetModels {
@@ -999,8 +1015,6 @@ static CGFloat itemMargin = 5;
 #pragma clang diagnostic pop
 
 @end
-
-
 
 @implementation TZCollectionView
 
